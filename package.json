@@ -4,6 +4,7 @@
   "description": "testing spawning child processes with forever",
   "main": "master.js",
   "scripts": {
+    "start": "forever -w master.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
