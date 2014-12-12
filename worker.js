@@ -1,10 +1,24 @@
 var http = require( "http" );
 
-var data = JSON.parse( process.argv[ 2 ] ),
-	port = 9090 + data.num;
-console.log( "Process "+ data.num +" received data ", JSON.stringify( data ) );
+var data = JSON.parse( process.env.data || '{}' );
+data.addedInWorker = 123;
 
-http.createServer( function ( req, res ) {
+console.log( 'data obj in worker', data );
+
+var server = http.createServer( function ( req, res ) {
 	res.writeHead( 200, { 'Content-Type': 'application/json' });
 	res.end( JSON.stringify( data ));
-}).listen( port );
+});
+
+server.listen( data.port || 9090 );
+
+process.on( 'uncaughtException', function ( err ) {
+	try {
+		server.close();
+	} catch ( err ) {
+		console.error('server close error', err );
+	}
+
+	console.error( 'exception in worker.js' );
+	console.error( err.stack );
+});

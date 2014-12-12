@@ -1,40 +1,43 @@
-const
-	child_process = require('child_process');
+var forever = require('forever-monitor');
 
-var settings = {
-	type: 'test worker',
-	key: 'value'
-};
 
-var workers = [];
+for ( var n = 0; n < 1; n++ ) {
+	var params = {
+		something: 'other',
+		num      : n,
+		port     : 9090 + n
+	};
 
-for( var i = 0; i < 2; i++ ) {
+	//console.log(params);
 
-	settings.num = i;
-	var ls = child_process.spawn( 'forever',
-		[ 'worker.js', JSON.stringify( settings )]
-	);
-
-	console.log( 'worker ' + i + ' spawned' );
-
-	ls.stdout.on( 'data', function ( data ) {
-		console.log( 'stdout: ' + data );
+	var child = new (forever.Monitor)('worker.js', {
+		max: 3,
+		//watch: true,
+		uid: 'worker' + n,
+		env: { data: JSON.stringify( params )}
 	});
 
-	ls.stderr.on( 'data', function ( data ) {
-		console.log( 'stderr: ' + data );
+	child.on('exit', function () {
+		console.log('worker.js has exited after 3 restarts');
 	});
 
-	ls.on( 'close', function ( code ) {
-		console.log( 'child process exited with code ' + code );
+	child.on('watch:restart', function(info) {
+		console.error('Restaring script because ' + info.file + ' changed');
 	});
 
-	workers[ i ] = ls;
+	child.on('restart', function() {
+		console.error('Forever restarting script for ' + child.times + ' time');
+	});
+
+	child.on('exit:code', function(code) {
+		console.error('Forever detected script exited with code ' + code);
+	});
+
+	child.start();
+
 }
 
-process.on( 'exit', function () {
-	console.error( 'master.js to exit.' );
-	for ( var i = 0, ls; ls = workers[ i ]; i++ ) {
-		ls.exit( 0 );
-	}
+process.on( 'uncaughtException', function ( err ) {
+	console.error( 'exception in master.js' );
+	console.error( err.stack );
 });

@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "forever": "^0.13.0"
+    "forever": "^0.13.0",
+    "forever-monitor": "^1.5.2",
+    "pm2": "^0.12.1"
   }
 }
