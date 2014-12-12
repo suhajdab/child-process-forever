@@ -6,4 +6,4 @@ hookshot()
 		console.log( 'ref ' + info.ref + ' was pushed.' )
 	});
 
-hookshot( 'ref/testing', 'git pull' ).listen( 9095 );
+hookshot( 'refs/heads/master', 'git pull' ).listen( 9095 );
