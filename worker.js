@@ -1,7 +1,7 @@
 var http = require( "http" );
 
 var data = JSON.parse( process.env.data || '{}' );
-data.addedInWorker = 123;
+data.addedInWorker = 456;
 
 console.log( 'data obj in worker', data );
 
