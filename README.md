@@ -1,4 +1,4 @@
 child-process-forever
 =====================
 
-edit to trigger auto-deploy
+Wow! This is freaking awesome! :)
