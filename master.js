@@ -14,6 +14,8 @@ for ( var n = 0; n < 1; n++ ) {
 		max: 3,
 		//watch: true,
 		uid: 'worker' + n,
+		killTTL : 5000,
+		killSignal : 'SIGTERM',
 		env: { data: JSON.stringify( params )}
 	});
 

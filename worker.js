@@ -12,12 +12,17 @@ var server = http.createServer( function ( req, res ) {
 
 server.listen( data.port || 9090 );
 
+process.on('SIGTERM', function ( s ) {
+	console.error('worker exit with SIGTERM', s );
+	server.close();
+	process.exit();
+});
+
+process.on('exit:code', function(code) {
+	console.error('worker exited with code ' + code);
+});
+
 process.on( 'uncaughtException', function ( err ) {
-	try {
-		server.close();
-	} catch ( err ) {
-		console.error('server close error', err );
-	}
 
 	console.error( 'exception in worker.js' );
 	console.error( err.stack );
